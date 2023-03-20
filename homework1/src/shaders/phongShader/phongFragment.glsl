@@ -105,7 +105,14 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 
 
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
-  return 1.0;
+  float depth = unpack(texture2D(shadowMap, shadowCoord.xy));
+  float cur_depth = shadowCoord.z;
+  if(cur_depth > depth){
+    return 0.;
+  }
+  else{
+    return 1.0;
+  }
 }
 
 vec3 blinnPhong() {
@@ -132,14 +139,20 @@ vec3 blinnPhong() {
 }
 
 void main(void) {
+  /*由顶点着色器中把顶点坐标乘以uLightMVP（相当于以灯源作为摄像机的MVP矩阵）得到的*/
+  /*vPositionFromLight为光源空间下投影的裁剪坐标，除以w结果为NDC坐标*/
+  vec3 shadowCoord = vPositionFromLight.xyz / vPositionFromLight.w;
+  /*把[-1,1]的NDC坐标转换为[0,1]的坐标*/
+  shadowCoord.xyz = (shadowCoord.xyz + 1.0) / 2.0;
+
 
   float visibility;
-  //visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
+  visibility = useShadowMap(uShadowMap, vec4(shadowCoord, 1.0));
   //visibility = PCF(uShadowMap, vec4(shadowCoord, 1.0));
   //visibility = PCSS(uShadowMap, vec4(shadowCoord, 1.0));
 
   vec3 phongColor = blinnPhong();
 
-  //gl_FragColor = vec4(phongColor * visibility, 1.0);
-  gl_FragColor = vec4(phongColor, 1.0);
+  //gl_FragColor = vec4(phongColor, 1.0);
+  gl_FragColor = vec4(phongColor * visibility, 1.0);
 }

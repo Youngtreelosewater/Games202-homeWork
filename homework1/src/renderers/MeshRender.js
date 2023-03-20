@@ -175,7 +175,7 @@ class MeshRender {
 
 	draw(camera) {
 		const gl = this.gl;
-
+///绑定到材质持有的FrameBuffer，所以shadow pass就会把结果渲染到自己的FrameBuffer
 		gl.bindFramebuffer(gl.FRAMEBUFFER, this.material.frameBuffer);
 		if (this.material.frameBuffer != null) {
 			// Shadow map

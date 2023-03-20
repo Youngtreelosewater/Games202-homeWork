@@ -6,7 +6,8 @@ class DirectionalLight {
         this.lightPos = lightPos;
         this.focalPoint = focalPoint;
         this.lightUp = lightUp
-
+        
+        /**ShadowPass 创建属于这个光源实例的FrameBuffer，最终会储存在Material */
         this.hasShadowMap = hasShadowMap;
         this.fbo = new FBO(gl);
         if (!this.fbo) {
@@ -14,7 +15,7 @@ class DirectionalLight {
             return;
         }
     }
-
+/**光源生成ShadowMap所用的MVP矩阵 */
     CalcLightMVP(translate, scale) {
         let lightMVP = mat4.create();
         let modelMatrix = mat4.create();
@@ -33,3 +34,4 @@ class DirectionalLight {
         return lightMVP;
     }
 }
+
