@@ -20,7 +20,7 @@ varying highp vec3 vNormal;
 #define PCF_NUM_SAMPLES NUM_SAMPLES
 #define NUM_RINGS 10
 
-#define EPS 1e-3
+#define EPS 1e-2
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
 
@@ -107,7 +107,7 @@ float PCSS(sampler2D shadowMap, vec4 coords){
 float useShadowMap(sampler2D shadowMap, vec4 shadowCoord){
   float depth = unpack(texture2D(shadowMap, shadowCoord.xy));
   float cur_depth = shadowCoord.z;
-  if(cur_depth > depth){
+  if(cur_depth > depth + EPS){
     return 0.;
   }
   else{
